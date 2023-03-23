@@ -14,6 +14,7 @@ guests_list = []
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
+    bot.delete_webhook()
     # Working With Variables
     global information
     global guests_list
@@ -131,7 +132,7 @@ def choose_sport(message):
 
     # Deleting Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-
+    markup = types.ReplyKeyboardRemove()
     # Sending Messages
     if information[3] != "Волгоград":
         bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
