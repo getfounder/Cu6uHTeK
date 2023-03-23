@@ -45,7 +45,17 @@ def choose_category(message):
     # Sending Messages
     TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["category"], reply_markup=markup)
 
-    TG_Bot.register_next_step_handler(message, choose_category)
+    TG_Bot.register_next_step_handler(message, write_name)
+
+
+def write_name(message):
+    # Creating Buttons
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+    # Sending Messages
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
+
+    TG_Bot.register_next_step_handler(message, write_name)
 
 
 if __name__ == "__main__":
