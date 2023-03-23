@@ -1,173 +1,217 @@
 import config as cfg
 
 import telebot
-
 from telebot import types
 
-# Initialization Telegram Bot
-TG_Bot = telebot.TeleBot(cfg.API_KEY)
+import qrcode
+
+
+bot = telebot.TeleBot(cfg.API_KEY)
 
 information = []
 guests_list = []
 
 
-@TG_Bot.message_handler(commands=['start'], content_types=['text'])
-def greeting(message):
-    # Clearing
-    information.clear()
+@bot.message_handler(commands=['start'], content_types=['text'])
+def start(message):
+    # Working With Variables
+    global information
+    global guests_list
+
     guests_list.clear()
-
-    # Greeting
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["greeting"])
-
-    start_registration(message)
-
-
-def start_registration(message):
-    # Creating Buttons
+    information.clear()
+    
+    # Creating Buttons 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     buttons = []
-    for answer in cfg.ANSWERS["ready"]:
-        buttons += [types.KeyboardButton(answer)]
+    for city in cfg.ANSWERS["category"]:
+        buttons += [types.KeyboardButton(city)]
 
     markup.add(*buttons)
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["ready"], reply_markup=markup)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["greeting"])
 
-    TG_Bot.register_next_step_handler(message, choose_category)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["category"], reply_markup=markup)
+    bot.register_next_step_handler(message, choose_category)
 
 
 def choose_category(message):
-    # Creating Buttons
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    # Working With Variables
+    global information
+    information += [message.text.split()[-1]]
 
-    buttons = []
-    for answer in cfg.ANSWERS["category"]:
-        buttons += [types.KeyboardButton(answer)]
-
-    markup.add(*buttons)
+    # Deleting Buttons 
+    markup = types.ReplyKeyboardRemove()
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["category"], reply_markup=markup)
-
-    TG_Bot.register_next_step_handler(message, write_name)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
+    bot.register_next_step_handler(message, write_name)
 
 
 def write_name(message):
-    # Adding Info
+    # Working With Variables
     global information
     information += [message.text.split()[-1]]
 
-    # Creating Buttons
+    # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
-
-    TG_Bot.register_next_step_handler(message, write_number)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["number"], reply_markup=markup)
+    bot.register_next_step_handler(message, write_number)
 
 
 def write_number(message):
-    # Adding Info
+    # Working With Variables
     global information
     information += [message.text.split()[-1]]
 
     # Creating Buttons
-    markup = types.ReplyKeyboardRemove()
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    
+    buttons = []
+    for city in cfg.ANSWERS["city"]:
+        buttons += [types.KeyboardButton(city)]
+
+    markup.add(*buttons)
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["number"], reply_markup=markup)
-
-    TG_Bot.register_next_step_handler(message, choose_city)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["city"], reply_markup=markup)
+    bot.register_next_step_handler(message, choose_city)
 
 
 def choose_city(message):
-    # Adding Info
+    # Working With Variables
     global information
     information += [message.text.split()[-1]]
 
-    # Creating Buttons
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    if information[0] == 'Спортсмен':
+        # Creating Buttons
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
-    buttons = []
-    for answer in cfg.ANSWERS["city"]:
-        buttons += [types.KeyboardButton(answer)]
+        buttons = []
+        for sport in cfg.ANSWERS["sports"]:
+            buttons += [types.KeyboardButton(sport)]
 
-    markup.add(*buttons)
+        markup.add(*buttons)
 
-    # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["city"], reply_markup=markup)
-    add_info(message)
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.ANSWERS["sport"], reply_markup=markup)
+        bot.register_next_step_handler(message, choose_sport)
 
+    elif information[3] != "Волгоград" and information[0] in ['Организатор', 'Болельщик']:
+        # Deleting Buttons 
+        markup = types.ReplyKeyboardRemove()
 
-def add_info(message):
-    # Adding Info
-    global information
-    information += [message.text.split()[-1]]
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
+        bot.register_next_step_handler(message, write_hotel_name)
 
-    # Sending Messages
-    condition_choose(message)
+    else:
+        # Creating Buttons
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
+        buttons = []
+        for sport in cfg.ANSWERS["choose_guests"]:
+            buttons += [types.KeyboardButton(sport)]
 
-def condition_choose(message):
-    global information
+        markup.add(*buttons)
 
-    if information[0] == "Спортсмен":
-        TG_Bot.register_next_step_handler(message, choose_sport)
-
-    elif information[3] != "Волгоград" and information[0] in ['Организатор', 'Болельщик', 'Гость']:
-        TG_Bot.register_next_step_handler(message, write_hotel_name)
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["choose_guests"], reply_markup=markup)
+        bot.register_next_step_handler(message, choose_guests)
 
 
 def choose_sport(message):
-    # Adding Info
+    # Working With Variables
     global information
     information += [message.text.split()[-1]]
 
-    # Creating Buttons
+    # Deleting Buttons
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+    # Sending Messages
+    if information[3] != "Волгоград":
+        bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
+        bot.register_next_step_handler(message, write_hotel_name)
+    else:
+        bot.send_message(message.from_user.id, cfg.MESSAGES["choose_guests"], reply_markup=markup)
+        bot.register_next_step_handler(message, choose_guests)
+
+
+def write_hotel_name(message):
+    # Working With Variables
+    global information
+    information += [message.text.split()[-1]]
+
+    # Deleting Buttons 
+    markup = types.ReplyKeyboardRemove()
+
+    # Sending Messages
+    bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_number"], reply_markup=markup)
+    bot.register_next_step_handler(message, write_hotel_number)
+
+
+def write_hotel_number(message):
+    # Working With Variables
+    global information
+    information += [message.text.split()[-1]]
+
+    # Creating Buttons 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
     buttons = []
-    for answer in cfg.ANSWERS["sport"]:
-        buttons += [types.KeyboardButton(answer)]
+    for city in cfg.ANSWERS["choose_guests"]:
+        buttons += [types.KeyboardButton(city)]
 
     markup.add(*buttons)
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["sport"], reply_markup=markup)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["choose_guests"], reply_markup=markup)
+    bot.register_next_step_handler(message, choose_guests)
 
-    TG_Bot.register_next_step_handler(message, choose_sport)
+
+def choose_guests(message):
+    if message.text == "Да":
+        # Deleting Buttons 
+        markup = types.ReplyKeyboardRemove()
+
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["write_guests"], reply_markup=markup)
+        bot.register_next_step_handler(message, write_guests)
+    else:
+        process_final_step(message)
 
 
-def write_hotel_name(message):
-    # Adding Info
+def write_guests(message):
+    # Working With Variables
     global information
+    global guests_list
+
     information += [message.text.split()[-1]]
+    guests_list += message.text.split(', ')
 
-    # Creating Buttons
-    markup = types.ReplyKeyboardRemove()
-
-    # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
-
-    TG_Bot.register_next_step_handler(message, write_hotel_number)
+    process_final_step(message)
 
 
-def write_hotel_number(message):
-    # Adding Info
-    global information
-    information += [message.text.split()[-1]]
+def process_final_step(message):
+    try:
+        print(information)
+        qr_info = information[0] + '\n' + information[1]
+        print(qr_info, 'qr')
+        qrcode.make(qr_info).save(str(message.from_user.id) + '.png')
+        bot.send_message(message.from_user.id, "Ваш QR-код:")
+        bot.send_photo(message.from_user.id, open(str(message.from_user.id) + '.png', 'rb'))
+        for guest in guests_list:
+            qr_info = "Гость" + '\n' + guest
+            qrcode.make(qr_info).save(str(message.from_user.id) + guest + '.png')
+            bot.send_message(message.from_user.id, "QR-код на имя " + guest)
+            bot.send_photo(message.from_user.id, open(str(message.from_user.id) + guest + '.png', 'rb'))
 
-    # Creating Buttons
-    markup = types.ReplyKeyboardRemove()
-
-    # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_number"], reply_markup=markup)
-
-    TG_Bot.register_next_step_handler(message, write_hotel_number)
+    except Exception as e:
+        print(e)
 
 
-if __name__ == "__main__":
-    TG_Bot.polling(none_stop=True, interval=0)
+bot.polling(none_stop=True, interval=0)
