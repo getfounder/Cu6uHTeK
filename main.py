@@ -92,13 +92,13 @@ def choose_city(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
         buttons = []
-        for sport in cfg.ANSWERS["sports"]:
+        for sport in cfg.ANSWERS["sport"]:
             buttons += [types.KeyboardButton(sport)]
 
         markup.add(*buttons)
 
         # Sending Messages
-        bot.send_message(message.from_user.id, cfg.ANSWERS["sport"], reply_markup=markup)
+        bot.send_message(message.from_user.id, cfg.MESSAGES["sport"], reply_markup=markup)
         bot.register_next_step_handler(message, choose_sport)
 
     elif information[3] != "Волгоград" and information[0] in ['Организатор', 'Болельщик']:
