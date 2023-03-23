@@ -55,7 +55,17 @@ def write_name(message):
     # Sending Messages
     TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
 
-    TG_Bot.register_next_step_handler(message, write_name)
+    TG_Bot.register_next_step_handler(message, write_number)
+
+
+def write_number(message):
+    # Creating Buttons
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+    # Sending Messages
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["number"], reply_markup=markup)
+
+    TG_Bot.register_next_step_handler(message, write_number)
 
 
 if __name__ == "__main__":
