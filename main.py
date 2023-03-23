@@ -65,7 +65,23 @@ def write_number(message):
     # Sending Messages
     TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["number"], reply_markup=markup)
 
-    TG_Bot.register_next_step_handler(message, write_number)
+    TG_Bot.register_next_step_handler(message, choose_city)
+
+
+def choose_city(message):
+    # Creating Buttons
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+    buttons = []
+    for answer in cfg.ANSWERS["city"]:
+        buttons += [types.KeyboardButton(answer)]
+
+    markup.add(*buttons)
+
+    # Sending Messages
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["city"], reply_markup=markup)
+
+    TG_Bot.register_next_step_handler(message, choose_city)
 
 
 if __name__ == "__main__":
