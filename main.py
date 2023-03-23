@@ -14,10 +14,9 @@ guests_list = []
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
-    bot.delete_webhook()
     # Working With Variables
     global information
-    global guests_list
+    global guests_list  
 
     guests_list.clear()
     information.clear()

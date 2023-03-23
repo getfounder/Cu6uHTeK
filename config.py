@@ -1,4 +1,4 @@
-API_KEY = "5997158499:AAERt0cvX2cFuuw3q5kRFthe_gurefIgbw8"
+API_KEY = "5997158499:AAGivPI0phq7ZqWny4BJ8za0BpFgKp_JAZA"
 
 MESSAGES = {
     "greeting":
