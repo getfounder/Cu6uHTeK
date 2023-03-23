@@ -56,26 +56,38 @@ def choose_category(message):
 
 
 def write_name(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
     # Creating Buttons
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.ReplyKeyboardRemove()
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["name"])
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
 
     TG_Bot.register_next_step_handler(message, write_number)
 
 
 def write_number(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
     # Creating Buttons
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup = types.ReplyKeyboardRemove()
 
     # Sending Messages
-    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["number"])
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["number"], reply_markup=markup)
 
     TG_Bot.register_next_step_handler(message, choose_city)
 
 
 def choose_city(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
     # Creating Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
@@ -87,11 +99,33 @@ def choose_city(message):
 
     # Sending Messages
     TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["city"], reply_markup=markup)
+    add_info(message)
 
-    TG_Bot.register_next_step_handler(message, choose_sport)
+
+def add_info(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
+    # Sending Messages
+    condition_choose(message)
+
+
+def condition_choose(message):
+    global information
+
+    if information[0] == "Спортсмен":
+        TG_Bot.register_next_step_handler(message, choose_sport)
+
+    elif information[3] != "Волгоград" and information[0] in ['Организатор', 'Болельщик', 'Гость']:
+        TG_Bot.register_next_step_handler(message, write_hotel_name)
 
 
 def choose_sport(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
     # Creating Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
@@ -105,6 +139,35 @@ def choose_sport(message):
     TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["sport"], reply_markup=markup)
 
     TG_Bot.register_next_step_handler(message, choose_sport)
+
+
+def write_hotel_name(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
+    # Creating Buttons
+    markup = types.ReplyKeyboardRemove()
+
+    # Sending Messages
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
+
+    TG_Bot.register_next_step_handler(message, write_hotel_number)
+
+
+def write_hotel_number(message):
+    # Adding Info
+    global information
+    information += [message.text.split()[-1]]
+
+    # Creating Buttons
+    markup = types.ReplyKeyboardRemove()
+
+    # Sending Messages
+    TG_Bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_number"], reply_markup=markup)
+
+    TG_Bot.register_next_step_handler(message, write_hotel_number)
+
 
 if __name__ == "__main__":
     TG_Bot.polling(none_stop=True, interval=0)
