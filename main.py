@@ -278,7 +278,7 @@ def choose_guests(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         markup.add(types.KeyboardButton("🔄Заново"))
 
-        if message.text == "Да":
+        if message.text == "✅Да":
             # Sending Messages
             bot.send_message(message.from_user.id, cfg.MESSAGES["write_guests"], reply_markup=markup)
             bot.register_next_step_handler(message, write_guests)
