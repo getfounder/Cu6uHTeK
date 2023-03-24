@@ -1,5 +1,5 @@
 import config as cfg
-from add_info import add_info
+from functions import *
 
 import telebot
 from telebot import types
