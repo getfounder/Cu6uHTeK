@@ -2,6 +2,8 @@ API_KEY = "5997158499:AAGivPI0phq7ZqWny4BJ8za0BpFgKp_JAZA"
 
 PASSWORD = "qwerty123@"
 
+COORDS = (48.709496, 44.516977)
+
 Cell_Settings = [
     ('A', 50),
     ('B', 110),
