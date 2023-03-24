@@ -5,7 +5,7 @@ PASSWORD = "qwerty123@"
 COORDS = (48.709496, 44.516977)
 
 Cell_Settings = [
-    ('A', 50),
+    ('A', 110),
     ('B', 110),
     ('C', 300),
     ('D', 150),
@@ -75,7 +75,7 @@ MESSAGES = {
         f"Пожалуйста, введите пароль организатора",
 
     "sheet":
-        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1sWdA9gDMyOFexXassraFsv6ONpZFn9m4q2_fd6kVRd4/edit#gid=0"
+        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1vh-CujqRY4y1qqGM_Z1IdMGztbwWmWwi2SQxqpn9B5E/edit#gid=0"
 }
 
 ANSWERS = {

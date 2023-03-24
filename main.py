@@ -67,11 +67,11 @@ def check_pass(message):
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
 
-    if password == cfg.PASSWORD:
+    if hash(password):
         # Sending Messages
         bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
         bot.register_next_step_handler(message, write_name)
-
+    
 
 
 def write_name(message):

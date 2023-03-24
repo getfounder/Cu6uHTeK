@@ -23,7 +23,7 @@ def add_info(user_data):
         sh = gc.open('UserInfo')
     except Exception:
         sh = gc.create('UserInfo')
-        sh.share('sibintecompany@gmail.com', perm_type='user', role='owner')
+        sh.share('vitalii.kupin1@gmail.com', perm_type='user', role='writer')
         sh = gc.open('UserInfo')
     
     
