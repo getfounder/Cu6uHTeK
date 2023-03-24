@@ -6,15 +6,20 @@ from telebot import types
 
 import qrcode
 
-
+flag = False
 bot = telebot.TeleBot(cfg.API_KEY)
 
 information = dict()
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
+    global flag
+    flag = check_existing(message.from_user.id)
     # Working With Variables
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    buttons = []
     global information
+
     information[message.from_user.id] = {
         "category": "",
         "name": "",
@@ -25,23 +30,36 @@ def start(message):
         "hotel_number": "", 
         "guests": "",      
     }
-    
-    # Creating Buttons 
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    print(message.from_user.id, flag)
+    if flag:  
+        for city in ["Да", "Нет"]:
+            buttons += [types.KeyboardButton(city)]
+        markup.add(*buttons)
+        bot.send_message(message.from_user.id, cfg.MESSAGES["already_exists"], reply_markup=markup)
+        bot.register_next_step_handler(message, exists_handler) 
+    else:
+        # Creating Buttons 
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
-    buttons = []
-    for city in cfg.ANSWERS["category"]:
-        buttons += [types.KeyboardButton(city)]
+        buttons = []
+        for city in cfg.ANSWERS["category"]:
+            buttons += [types.KeyboardButton(city)]
 
-    markup.add(*buttons)
+        markup.add(*buttons)
 
-    # Sending Messages
-    if len(information[message.from_user.id]["category"]) == 0:
-        bot.send_message(message.from_user.id, cfg.MESSAGES["greeting"])
+        # Sending Messages
+        if len(information[message.from_user.id]["category"]) == 0:
+            bot.send_message(message.from_user.id, cfg.MESSAGES["greeting"])
 
-    bot.send_message(message.from_user.id, cfg.MESSAGES["category"], reply_markup=markup)
-    bot.register_next_step_handler(message, choose_category)
-
+        bot.send_message(message.from_user.id, cfg.MESSAGES["category"], reply_markup=markup)
+        bot.register_next_step_handler(message, choose_category)
+        
+def exists_handler(message):
+    if message.text == 'Да':
+        dell(flag)
+        start(message)
+    else:
+        bot.send_message(message.from_user.id, 'Хорошо')
 
 def choose_category(message):
     # Working With Variables
@@ -320,7 +338,7 @@ def adding_info(message):
         }
 
         bot.send_message(message.from_user.id, cfg.MESSAGES["await"], reply_markup=markup)
-        # add_info(user_data)
+        add_info(user_data)
         
         qr_info = f"{information[message.from_user.id]['category']}\n{information[message.from_user.id]['name']}\n{information[message.from_user.id]['city']}"
 
@@ -339,6 +357,7 @@ def adding_info(message):
             bot.send_message(message.from_user.id, cfg.MESSAGES["sheet"], reply_markup=markup)
 
         del information[message.from_user.id]
+
 
 
 if __name__ == "__main__":

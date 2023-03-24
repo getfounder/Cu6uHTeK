@@ -2,7 +2,7 @@ API_KEY = "5997158499:AAGivPI0phq7ZqWny4BJ8za0BpFgKp_JAZA"
 
 PASSWORD = "qwerty123@"
 
-COORDS = (48.709496, 44.516977)
+COORDS = (48.7125201, 44.5056542)
 
 Cell_Settings = [
     ('A', 110),
@@ -82,6 +82,8 @@ MESSAGES = {
 
     "true":
         f"Все верно?",
+    "already_exists":
+        f"Похоже вы уже зарегистрированы. Желаете пройти регистрацию заново?",
 }
 
 ANSWERS = {
