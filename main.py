@@ -9,17 +9,22 @@ import qrcode
 
 bot = telebot.TeleBot(cfg.API_KEY)
 
-information = []
-guests_list = []
+information = dict()
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
     # Working With Variables
     global information
-    global guests_list  
-
-    guests_list.clear()
-    information.clear()
+    information[message.from_user.id] = {
+        "category": "",
+        "name": "",
+        "number": "", 
+        "city": "", 
+        "sport": "", 
+        "hotel_name": "", 
+        "hotel_number": "", 
+        "guests": "",      
+    }
     
     # Creating Buttons 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -40,7 +45,7 @@ def start(message):
 def choose_category(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["category"] += message.text.split()[-1]
 
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
@@ -53,7 +58,7 @@ def choose_category(message):
 def write_name(message):
     # Working With Variables
     global information
-    information += [message.text]
+    information[message.from_user.id]["name"] += message.text
 
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
@@ -66,7 +71,7 @@ def write_name(message):
 def write_number(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["number"] += message.text
 
     # Creating Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -85,9 +90,9 @@ def write_number(message):
 def choose_city(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["city"] += message.text
 
-    if information[0] == 'Спортсмен':
+    if information[message.from_user.id]["category"] == 'Спортсмен':
         # Creating Buttons
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
@@ -101,7 +106,7 @@ def choose_city(message):
         bot.send_message(message.from_user.id, cfg.MESSAGES["sport"], reply_markup=markup)
         bot.register_next_step_handler(message, choose_sport)
 
-    elif information[3] != "Волгоград" and information[0] in ['Организатор', 'Болельщик']:
+    elif information[message.from_user.id]["city"] != "Волгоград" and information[message.from_user.id]["category"] in ['Организатор', 'Болельщик']:
         # Deleting Buttons 
         markup = types.ReplyKeyboardRemove()
 
@@ -127,13 +132,13 @@ def choose_city(message):
 def choose_sport(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["sport"] += " ".join(message.text.split()[1::])
 
     # Deleting Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup = types.ReplyKeyboardRemove()
     
-    if information[3] != "Волгоград":
+    if information[message.from_user.id]["city"] != "Волгоград":
         # Sending Messages
         bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
         bot.register_next_step_handler(message, write_hotel_name)
@@ -151,7 +156,7 @@ def choose_sport(message):
 def write_hotel_name(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["hotel_name"] += message.text
 
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
@@ -164,7 +169,7 @@ def write_hotel_name(message):
 def write_hotel_number(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information[message.from_user.id]["hotel_number"] += message.text
 
     # Creating Buttons 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -195,27 +200,29 @@ def choose_guests(message):
 def write_guests(message):
     # Working With Variables
     global information
-    global guests_list
+    information[message.from_user.id]["guests"] += message.text
 
-    information += [message.text]
-    guests_list += message.text.split(', ')
-    print(information)
     process_final_step(message)
 
 
 def process_final_step(message):
+    global information
+
     markup = types.ReplyKeyboardRemove()
     
-    qr_info = f"{information[0]}\n{information[1]}\n{information[3]}"
+    qr_info = f"{information[message.from_user.id]['category']}\n{information[message.from_user.id]['name']}\n{information[message.from_user.id]['city']}"
 
     qrcode.make(qr_info).save("temps/qrcode.png")
 
     bot.send_message(message.from_user.id, cfg.MESSAGES["QR_code"], reply_markup=markup)
     bot.send_photo(message.from_user.id, open("temps/qrcode.png", 'rb'))
+
     bot.send_message(message.from_user.id, cfg.MESSAGES["Location"], reply_markup=markup)
     bot.send_location(message.from_user.id, 0, 0)
+
     bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
     bot.send_document(message.from_user.id, open("sample.pdf", 'rb'))
+
 
 if __name__ == "__main__":
     bot.polling(none_stop=True, interval=0)
