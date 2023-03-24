@@ -1,1 +1,2 @@
-from .add_info import add_info
+from .add_info import *
+from .hash import compute

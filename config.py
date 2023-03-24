@@ -46,10 +46,10 @@ MESSAGES = {
         f"Укажите Ваш вид спорта",
 
     "hotel_name":
-        f"Введите название отеля",
+        f"Введите название отеля, в котором Вы проживаете",
     
     "hotel_number":
-        f"Введите номер комнаты",
+        f"Введите номер комнаты, в которой Вы проживаете",
 
     "choose_guests":
         f"Планируете ли Вы пригласить на Спартакиаду членов "
@@ -73,9 +73,15 @@ MESSAGES = {
 
     "password":
         f"Пожалуйста, введите пароль организатора",
+    
+    "repassword":
+        f"Пароль неверен. Пожалуйста, введите пароль организатора еще раз",
 
     "sheet":
-        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1vh-CujqRY4y1qqGM_Z1IdMGztbwWmWwi2SQxqpn9B5E/edit#gid=0"
+        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1vh-CujqRY4y1qqGM_Z1IdMGztbwWmWwi2SQxqpn9B5E/edit#gid=0",
+
+    "true":
+        f"Все верно?",
 }
 
 ANSWERS = {
