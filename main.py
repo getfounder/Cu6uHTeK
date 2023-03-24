@@ -1,5 +1,5 @@
-from logging import info
 import config as cfg
+from add_info import add_info
 
 import telebot
 from telebot import types
@@ -209,8 +209,23 @@ def process_final_step(message):
     global information
 
     markup = types.ReplyKeyboardRemove()
+
+    user_data = {
+        'A': None,
+        'B': information[message.from_user.id]["category"],
+        'C': information[message.from_user.id]["name"],
+        'D': information[message.from_user.id]["number"],
+        'E': information[message.from_user.id]["city"],
+        "F": information[message.from_user.id]["sport"],
+        'G': information[message.from_user.id]["hotel_name"],
+        'H': information[message.from_user.id]["hotel_number"],
+        'I': information[message.from_user.id]["guests"],
+    }
+
+    add_info(user_data)
     
     qr_info = f"{information[message.from_user.id]['category']}\n{information[message.from_user.id]['name']}\n{information[message.from_user.id]['city']}"
+    del information[message.from_user.id]
 
     qrcode.make(qr_info).save("temps/qrcode.png")
 
