@@ -337,8 +337,7 @@ def adding_info(message):
             'I': information[message.from_user.id]["guests"],
         }
 
-        bot.send_message(message.from_user.id, cfg.MESSAGES["await"], reply_markup=markup)
-        add_info(user_data)
+      
         
         qr_info = f"{information[message.from_user.id]['category']} {information[message.from_user.id]['name']} {information[message.from_user.id]['city']}"
 
@@ -355,6 +354,8 @@ def adding_info(message):
         bot.send_message(message.from_user.id, 'Добавьте наш набор стикеров! https://t.me/addstickers/SIBINTEKpress', reply_markup=markup)
         if information[message.from_user.id]["category"] == "Организатор":
             bot.send_message(message.from_user.id, cfg.MESSAGES["sheet"], reply_markup=markup)
+
+        add_info(user_data)
             
         del information[message.from_user.id]
 
