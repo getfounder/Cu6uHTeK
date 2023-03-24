@@ -221,7 +221,7 @@ def process_final_step(message):
     bot.send_location(message.from_user.id, 0, 0)
 
     bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
-    bot.send_document(message.from_user.id, open("sample.pdf", 'rb'))
+    bot.send_document(message.from_user.id, open("data/sample.pdf", 'rb'))
 
 
 if __name__ == "__main__":
