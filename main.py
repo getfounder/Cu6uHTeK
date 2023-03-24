@@ -340,9 +340,9 @@ def adding_info(message):
         bot.send_message(message.from_user.id, cfg.MESSAGES["await"], reply_markup=markup)
         add_info(user_data)
         
-        qr_info = f"{information[message.from_user.id]['category']}\n{information[message.from_user.id]['name']}\n{information[message.from_user.id]['city']}"
+        qr_info = f"{information[message.from_user.id]['category']} {information[message.from_user.id]['name']} {information[message.from_user.id]['city']}"
 
-        qrcode.make(qr_info).save("temps/qrcode.png")
+        qrcode.make(str(qr_info)).save("temps/qrcode.png")
 
         bot.send_message(message.from_user.id, cfg.MESSAGES["QR_code"], reply_markup=markup)
         bot.send_photo(message.from_user.id, open("temps/qrcode.png", 'rb'))
@@ -352,10 +352,10 @@ def adding_info(message):
 
         bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
         bot.send_document(message.from_user.id, open("data/sample.pdf", 'rb'))
-
+        bot.send_message(message.from_user.id, 'Добавьте наш набор стикеров! https://t.me/addstickers/SIBINTEKpress', reply_markup=markup)
         if information[message.from_user.id]["category"] == "Организатор":
             bot.send_message(message.from_user.id, cfg.MESSAGES["sheet"], reply_markup=markup)
-
+            
         del information[message.from_user.id]
 
 
