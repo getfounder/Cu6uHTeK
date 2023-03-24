@@ -30,7 +30,7 @@ def start(message):
         "hotel_number": "", 
         "guests": "",      
     }
-    print(message.from_user.id, flag)
+
     if flag:  
         for city in ["✅Да", "❌Нет"]:
             buttons += [types.KeyboardButton(city)]
@@ -64,7 +64,7 @@ def exists_handler(message):
 def choose_category(message):
     # Working With Variables
     global information
-    information[message.from_user.id]["category"] += message.text.split()[-1]
+    information[message.from_user.id]["category"] = message.text.split()[-1]
 
     # Deleting Buttons 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -108,7 +108,7 @@ def write_name(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["name"] += message.text
+        information[message.from_user.id]["name"] = message.text
 
         # Deleting Buttons 
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -125,7 +125,7 @@ def write_number(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["number"] += message.text
+        information[message.from_user.id]["number"] = message.text
 
         if information[message.from_user.id]["category"] == "Волонтер":
             # Creating Buttons
@@ -161,7 +161,7 @@ def choose_city(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["city"] += message.text
+        information[message.from_user.id]["city"] = message.text
 
         if information[message.from_user.id]["category"] == 'Спортсмен' and information[message.from_user.id]["city"] != "Волгоград":
             # Creating Buttons
@@ -237,7 +237,7 @@ def write_hotel_name(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["hotel_name"] += message.text
+        information[message.from_user.id]["hotel_name"] = message.text
 
         # Deleting Buttons 
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -254,7 +254,7 @@ def write_hotel_number(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["hotel_number"] += message.text
+        information[message.from_user.id]["hotel_number"] = message.text
 
         # Creating Buttons 
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -275,7 +275,7 @@ def choose_guests(message):
         start(message)
     else:
         # Deleting Buttons 
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)    
         markup.add(types.KeyboardButton("🔄Заново"))
 
         if message.text == "✅Да":
@@ -292,7 +292,7 @@ def write_guests(message):
     else:
         # Working With Variables
         global information
-        information[message.from_user.id]["guests"] += message.text
+        information[message.from_user.id]["guests"] = message.text
 
         process_final_step(message)
 
