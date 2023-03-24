@@ -1,3 +1,4 @@
+from logging import info
 import config as cfg
 
 import telebot
@@ -10,7 +11,6 @@ bot = telebot.TeleBot(cfg.API_KEY)
 
 information = []
 guests_list = []
-
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
@@ -53,7 +53,7 @@ def choose_category(message):
 def write_name(message):
     # Working With Variables
     global information
-    information += [message.text.split()[-1]]
+    information += [message.text]
 
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
@@ -132,11 +132,18 @@ def choose_sport(message):
     # Deleting Buttons
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup = types.ReplyKeyboardRemove()
-    # Sending Messages
+    
     if information[3] != "Волгоград":
+        # Sending Messages
         bot.send_message(message.from_user.id, cfg.MESSAGES["hotel_name"], reply_markup=markup)
         bot.register_next_step_handler(message, write_hotel_name)
     else:
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        buttons = []
+        for city in cfg.ANSWERS["choose_guests"]:
+            buttons += [types.KeyboardButton(city)]
+
+        markup.add(*buttons)
         bot.send_message(message.from_user.id, cfg.MESSAGES["choose_guests"], reply_markup=markup)
         bot.register_next_step_handler(message, choose_guests)
 
@@ -174,10 +181,10 @@ def write_hotel_number(message):
 
 
 def choose_guests(message):
-    if message.text == "Да":
-        # Deleting Buttons 
-        markup = types.ReplyKeyboardRemove()
+    # Deleting Buttons 
+    markup = types.ReplyKeyboardRemove()
 
+    if message.text == "Да":
         # Sending Messages
         bot.send_message(message.from_user.id, cfg.MESSAGES["write_guests"], reply_markup=markup)
         bot.register_next_step_handler(message, write_guests)
@@ -190,28 +197,28 @@ def write_guests(message):
     global information
     global guests_list
 
-    information += [message.text.split()[-1]]
+    information += [message.text]
     guests_list += message.text.split(', ')
-
+    print(information)
     process_final_step(message)
 
 
 def process_final_step(message):
-    try:
-        print(information)
-        qr_info = information[0] + '\n' + information[1]
-        print(qr_info, 'qr')
-        qrcode.make(qr_info).save(str(message.from_user.id) + '.png')
-        bot.send_message(message.from_user.id, "Ваш QR-код:")
-        bot.send_photo(message.from_user.id, open(str(message.from_user.id) + '.png', 'rb'))
-        for guest in guests_list:
-            qr_info = "Гость" + '\n' + guest
-            qrcode.make(qr_info).save(str(message.from_user.id) + guest + '.png')
-            bot.send_message(message.from_user.id, "QR-код на имя " + guest)
-            bot.send_photo(message.from_user.id, open(str(message.from_user.id) + guest + '.png', 'rb'))
+    markup = types.ReplyKeyboardRemove()
+    
+    qr_info = f"{information[0]}\n{information[1]}\n{information[3]}"
 
-    except Exception as e:
-        print(e)
+    qrcode.make(qr_info).save("temps/qrcode.png")
+
+    bot.send_message(message.from_user.id, cfg.MESSAGES["QR_code"], reply_markup=markup)
+    bot.send_photo(message.from_user.id, open("temps/qrcode.png", 'rb'))
+    bot.send_message(message.from_user.id, cfg.MESSAGES["Location"], reply_markup=markup)
+    bot.send_location(message.from_user.id, 0, 0)
+    bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
+    bot.send_document(message.from_user.id, open("sample.pdf", 'rb'))
 
 
-bot.polling(none_stop=True, interval=0)
+
+
+if __name__ == "__main__":
+    bot.polling(none_stop=True, interval=0)
