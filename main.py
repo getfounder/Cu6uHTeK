@@ -218,6 +218,8 @@ def process_final_step(message):
     bot.send_document(message.from_user.id, open("sample.pdf", 'rb'))
 
 
+    bot.send_message(message.from_user.id, cfg.MESSAGES["QR_code"], reply_markup=markup)
+    bot.send_photo(message.from_user.id, open("temps/qrcode.png", 'rb'))
 
 
 if __name__ == "__main__":
