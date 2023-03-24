@@ -1,5 +1,7 @@
 API_KEY = "5997158499:AAGivPI0phq7ZqWny4BJ8za0BpFgKp_JAZA"
 
+PASSWORD = "qwerty123@"
+
 Cell_Settings = [
     ('A', 50),
     ('B', 110),
@@ -63,6 +65,15 @@ MESSAGES = {
 
     "Booklet":
         f"Расписание мероприятия:",
+
+    "await":
+        f"Пожалуйста, подождите. Идет обработка информации...",
+
+    "password":
+        f"Пожалуйста, введите пароль организатора",
+
+    "sheet":
+        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1he35M9eOsMUc3p6515lNUmVL6n3ZRCP7gwjpEo-x4XA/edit#gid=0"
 }
 
 ANSWERS = {

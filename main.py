@@ -50,9 +50,28 @@ def choose_category(message):
     # Deleting Buttons 
     markup = types.ReplyKeyboardRemove()
 
-    # Sending Messages
-    bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
-    bot.register_next_step_handler(message, write_name)
+    if information[message.from_user.id]["category"] == "Организатор":
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["password"], reply_markup=markup)
+        bot.register_next_step_handler(message, check_pass)
+    else:
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
+        bot.register_next_step_handler(message, write_name)
+
+
+def check_pass(message):
+    # Working With Variables
+    password = message.text
+
+    # Deleting Buttons 
+    markup = types.ReplyKeyboardRemove()
+
+    if password == cfg.PASSWORD:
+        # Sending Messages
+        bot.send_message(message.from_user.id, cfg.MESSAGES["name"], reply_markup=markup)
+        bot.register_next_step_handler(message, write_name)
+
 
 
 def write_name(message):
@@ -222,10 +241,10 @@ def process_final_step(message):
         'I': information[message.from_user.id]["guests"],
     }
 
+    bot.send_message(message.from_user.id, cfg.MESSAGES["await"], reply_markup=markup)
     add_info(user_data)
     
     qr_info = f"{information[message.from_user.id]['category']}\n{information[message.from_user.id]['name']}\n{information[message.from_user.id]['city']}"
-    del information[message.from_user.id]
 
     qrcode.make(qr_info).save("temps/qrcode.png")
 
@@ -237,6 +256,11 @@ def process_final_step(message):
 
     bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
     bot.send_document(message.from_user.id, open("data/sample.pdf", 'rb'))
+
+    if information[message.from_user.id]["category"] == "Организатор":
+        bot.send_message(message.from_user.id, cfg.MESSAGES["sheet"], reply_markup=markup)
+
+    del information[message.from_user.id]
 
 
 if __name__ == "__main__":
