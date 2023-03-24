@@ -22,8 +22,8 @@ def add_info(user_data):
     try:
         sh = gc.open('UserInfo')
     except Exception:
-        gc.create("UserInfo")
-        sh.share('sibintecompany@gmail.com', perm_type='user', role='writer')
+        sh = gc.create('UserInfo')
+        sh.share('sibintecompany@gmail.com', perm_type='user', role='owner')
         sh = gc.open('UserInfo')
     
     
@@ -39,7 +39,6 @@ def add_info(user_data):
             set_column_width(worksheet, *setting)
 
     id = len(worksheet.col_values(1))
-    user_data["A"] = id
     
     for key in user_data.keys():
         worksheet.update(key + f'{id + 1}', user_data[key])

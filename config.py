@@ -75,7 +75,7 @@ MESSAGES = {
         f"Пожалуйста, введите пароль организатора",
 
     "sheet":
-        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1he35M9eOsMUc3p6515lNUmVL6n3ZRCP7gwjpEo-x4XA/edit#gid=0"
+        f"Ссылка на таблицу:\nhttps://docs.google.com/spreadsheets/d/1sWdA9gDMyOFexXassraFsv6ONpZFn9m4q2_fd6kVRd4/edit#gid=0"
 }
 
 ANSWERS = {

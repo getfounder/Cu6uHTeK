@@ -230,7 +230,7 @@ def process_final_step(message):
     markup = types.ReplyKeyboardRemove()
 
     user_data = {
-        'A': None,
+        'A': message.from_user.id,
         'B': information[message.from_user.id]["category"],
         'C': information[message.from_user.id]["name"],
         'D': information[message.from_user.id]["number"],
@@ -252,7 +252,7 @@ def process_final_step(message):
     bot.send_photo(message.from_user.id, open("temps/qrcode.png", 'rb'))
 
     bot.send_message(message.from_user.id, cfg.MESSAGES["Location"], reply_markup=markup)
-    bot.send_location(message.from_user.id, 0, 0)
+    bot.send_location(message.from_user.id, *cfg.COORDS)
 
     bot.send_message(message.from_user.id, cfg.MESSAGES["Booklet"], reply_markup=markup)
     bot.send_document(message.from_user.id, open("data/sample.pdf", 'rb'))
